@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import  * as bcrypt from 'bcrypt'
-import { JwtPayload } from 'src/interfaces/jwt-payload.interfaces';
+import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interfaces';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
@@ -65,6 +65,15 @@ export class AuthService {
       token: this.getJwtToken({ id: user.id })
     };
     
+  }
+
+  checkAuthStatus(user: User){
+
+
+    return {
+      ...user,
+      token: this.getJwtToken({ id: user.id })
+    }
   }
 
   private getJwtToken(jwtPayload: JwtPayload){
