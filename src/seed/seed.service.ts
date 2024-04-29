@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import  * as bcrypt from 'bcrypt'
-import { ProductsService } from './../products/products.service';
 import { initialData } from './data/seed-data';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../auth/entities/user.entity';
@@ -11,7 +10,6 @@ import { Repository } from 'typeorm';
 export class SeedService {
 
   constructor(
-    private readonly productsService: ProductsService,
 
     @InjectRepository(User)
     private readonly userRepository: Repository<User>
@@ -21,9 +19,8 @@ export class SeedService {
   async runSeed() {
 
     await this.deleteTables();
+    
     const adminUser = await this.insertUsers();
-
-    await this.insertNewProducts(adminUser);
 
     return 'SEED EXECUTED';
   }
@@ -50,8 +47,6 @@ export class SeedService {
   }
 
   private async deleteTables() {
-    await this.productsService.deleteAllProducts();
-
     const queryBuilder = this.userRepository.createQueryBuilder();
     await queryBuilder
       .delete()
@@ -59,23 +54,6 @@ export class SeedService {
       .execute()
     
 
-  }
-
-  private async insertNewProducts(user: User) {
-    await this.productsService.deleteAllProducts();
-
-    const products = initialData.products;
-
-    const insertPromises = [];
-
-    products.forEach( product => {
-      insertPromises.push( this.productsService.create( product, user ) );
-    });
-
-    await Promise.all( insertPromises );
-
-
-    return true;
   }
 
 

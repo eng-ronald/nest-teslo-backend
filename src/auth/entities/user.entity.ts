@@ -1,4 +1,4 @@
-import { Product } from '../../products/entities';
+import { Account } from 'src/accounts/entities/account.entity';
 import { BeforeInsert, BeforeUpdate, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 
@@ -12,6 +12,21 @@ export class User {
     unique: true
   })
   email: string;
+
+  @Column('text', {
+    nullable: true
+  })
+  phone: string;
+
+  @Column('text', {
+    nullable: true
+  })
+  picture: string;
+
+  @Column('text', {
+    default: 'main'
+  })
+  branch: string;
 
   @Column('text', {
     select: false
@@ -28,15 +43,21 @@ export class User {
 
   @Column('text', {
     array: true,
-    default: ['user']
+    default: ['Seller']
   })
   roles: string[];
 
-  @OneToMany(
-    () => Product,
-    (product) => product.user
+  @Column('text', {
+    array: true,
+    nullable: true
+  })
+  permissionMenu: string[];
+
+  @OneToMany( 
+    () => Account, 
+    account => account.user
   )
-  product: Product
+  accounts: Account[];
 
 
 
